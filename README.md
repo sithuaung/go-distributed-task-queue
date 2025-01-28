@@ -6,11 +6,11 @@
 - PostgreSQL
 
 ### Core Features
-[x] Task Scheduling and Execution:
+- [x] Task Scheduling and Execution:
     - Basic task queue where tasks can be enqueued and dequeued.
     - Asynchronous task execution with workers.
 
-[] Distributed Architecture:
+- [] Distributed Architecture:
     - Distributed system design with multiple worker nodes.
     - Tasks are distributed across nodes.
 
