@@ -1,0 +1,52 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"  # RabbitMQ AMQP port
+      - "15672:15672"  # RabbitMQ Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - go-rabbitmq-net
+
+  producer:
+    build:
+      context: ./producer
+    container_name: producer
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - go-rabbitmq-net
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./producer:/app  # Mount only the producer code
+    # working_dir: /app  # Set working directory explicitly
+    # command: go run main.go  # Run your app dynamically
+
+  consumer:
+    build:
+      context: ./consumer
+    container_name: consumer
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - go-rabbitmq-net
+    volumes:
+      - ./consumer:/app  # Mount only the producer code
+    # working_dir: /app  # Set working directory explicitly
+    # command: go run main.go  # Run your app dynamically
+
+networks:
+  go-rabbitmq-net:
+    driver: bridge
+
