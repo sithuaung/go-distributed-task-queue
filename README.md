@@ -14,76 +14,76 @@
     - Distributed system design with multiple worker nodes.
     - Tasks are distributed across nodes.
 
-3. Fault Tolerance:
+- [ ] Fault Tolerance:
     - Retries for failed tasks.
     - Heartbeats to detect worker failures and reassign tasks.
 
-4. Scalability:
+- [ ] Scalability:
     - Can scale horizontally by adding more worker nodes.
     - Load balancer / consistent hashing to distribute tasks evenly.
 
 ### Nice Features
-1. Priority Queues:
+- [ ] Priority Queues:
     - Support for task prioritization (high, medium, low priority).
 
-2. Task Dependencies:
+- [ ] Task Dependencies:
     - Tasks can have dependencies (e.g., Task B runs only after Task A completes).
 
-3. Rate Limiting:
+- [ ] Rate Limiting:
     - Rate limiting for tasks to prevent overloading the system.
 
-4. Task Timeouts:
+- [ ] Task Timeouts:
     - Timeouts for tasks to ensure they don’t run indefinitely.
 
-5. Persistence:
+- [ ] Persistence:
     - PostgreSQL to persist tasks and their states.
     - Tasks can be recovered after a system crash.
 
-6. Distributed Consensus:
+- [ ] Distributed Consensus:
     - Consensus algorithm like Raft or leverage etcd/Zookeeper for coordination between nodes.
 
-7. Monitoring and Metrics:
+- [ ] Monitoring and Metrics:
     - Prometheus / OpenTelemetry to collect metrics (e.g., task completion rate, worker load).
 
-8. Dashboard to visualize system performance.
+- [ ] Dashboard to visualize system performance.
     - Grafana
 
-9. Dynamic Worker Scaling:
+- [ ] Dynamic Worker Scaling:
     - Implement auto-scaling for workers based on task load by using Kubernetes
 
-10. Task Batching:
+- [x] Task Batching:
     - Batching of small tasks to improve efficiency.
 
-11. Dead Letter Queue:
+- [ ] Dead Letter Queue:
     - Dead letter queue for tasks that fail repeatedly.
 
-12. API and CLI:
-    - A REST/gRPC API for enqueuing tasks and checking their status.
+- [ ] API and CLI:
+    - [x] A REST/gRPC API for enqueuing tasks and checking their status.
     - Build a CLI tool for interacting with the task queue.
 
-13. Event-Driven Architecture:
+- [x] Event-Driven Architecture:
     - Uses RabbitMQ message broker for task distribution.
 
-14. Distributed Tracing:
+- [ ] Distributed Tracing:
     - Integrate distributed tracing  by Jaeger to track tasks across workers.
 
-15. Task Result Storage:
+- [ ] Task Result Storage:
     - Store task results in a distributed storage system in S3.
 
-16. Graceful Shutdown:
+- [ ] Graceful Shutdown:
     - Graceful shutdown for workers to complete ongoing tasks before exiting.
 
-15. Custom Task Routing:
+- [ ] Custom Task Routing:
     - Tasks to be routed to specific workers based on metadata or tags.
 
-16. Idempotency:
+- [ ] Idempotency:
     - Ensure tasks are idempotent to handle duplicate executions gracefully.
 
-17. Security:
+- [ ] Security:
     - Authentication and authorization for API access.
     - Encrypt sensitive task data.
 
-18. Testing and CI/CD:
+- [ ] Testing and CI/CD:
     - Unit tests.
     - Integration tests.
     - Load tests.
