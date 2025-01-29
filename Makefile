@@ -11,3 +11,7 @@ send_batch_tasks:
 
 up:
 	docker compose up -d --build
+
+clean:
+	go clean -cache
+	go clean -modcache
