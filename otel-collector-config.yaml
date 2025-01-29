@@ -1,0 +1,29 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+exporters:
+  logging:
+    loglevel: debug
+  otlp/tempo:
+    endpoint: "tempo:4317" # Send traces to Tempo
+    tls:
+      insecure: true
+  prometheus:
+    endpoint: "0.0.0.0:8889" # Send metrics to Prometheus
+  loki:
+    endpoint: "http://loki:3100/loki/api/v1/push" # Send logs to Loki
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      exporters: [otlp/tempo, logging]
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus, logging]
+    logs:
+      receivers: [otlp]
+      exporters: [loki, logging]

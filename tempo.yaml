@@ -1,0 +1,19 @@
+server:
+  http_address: ":3200"
+  grpc_address: ":4317"
+  otel_http_address: ":4318"
+
+storage:
+  # Configure storage (e.g., in-memory, disk, etc.)
+  # Example using in-memory storage (for testing):
+  in_memory: {}
+
+receivers:
+  otlp:
+    protocols:
+      grpc: {}
+      http: {} 
+
+exporters:
+  logging:
+    logLevel: debug

@@ -1,0 +1,8 @@
+server:
+  http_listen_address: "0.0.0.0:3100"
+
+receivers:
+- pipelines:
+  - stages:
+    - regex:
+        expression: '{job="producer"} \| {job="consumer"}'

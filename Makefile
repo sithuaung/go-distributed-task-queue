@@ -15,3 +15,6 @@ up:
 clean:
 	go clean -cache
 	go clean -modcache
+
+start_cllector:
+	docker run -d -p 4317:4317 -p 4318:4318 -v $(pwd)/otel-collector-config.yaml:/etc/otel-collector-config.yaml otel/opentelemetry-collector:latest --config=/etc/otel-collector-config.yaml

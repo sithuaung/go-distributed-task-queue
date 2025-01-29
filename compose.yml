@@ -23,15 +23,17 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+      otel-lgtm:
+        condition: service_healthy
     networks:
       - go-rabbitmq-net
     ports:
       - "8080:8080"
     volumes:
       - ./producer:/app  # Mount only the producer code
-      # - ./otel:/app/otel  # Mount otel folder into /app/otel
-    # working_dir: /app  # Set working directory explicitly
-    # command: go run main.go  # Run your app dynamically
+    environment:
+      # OTEL_RESOURCE_ATTRIBUTES: service.name=go-user-service,service.instance.id=localhost:8000
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-lgtm:4317
 
   consumer:
     build:
@@ -40,15 +42,38 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+      otel-lgtm:
+        condition: service_healthy
     networks:
       - go-rabbitmq-net
     volumes:
       - ./consumer:/app  # Mount only the producer code
-      # - ./otel:/app/otel  # Mount otel folder into /app/otel
-    # working_dir: /app  # Set working directory explicitly
-    # command: go run main.go  # Run your app dynamically
+    environment:
+      # OTEL_RESOURCE_ATTRIBUTES: service.name=go-user-service,service.instance.id=localhost:8000
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-lgtm:4317
+
+  otel-lgtm:
+    image: grafana/otel-lgtm:latest
+    container_name: otel-lgtm
+    ports:
+      - "4317:4317"    # OTLP gRPC (Traces, Metrics, Logs)
+      - "4318:4318"    # OTLP HTTP
+      - "3000:3000"    # Grafana UI
+      - "9090:9090"    # Prometheus UI (if enabled)
+      - "3100:3100"    # Loki UI
+      - "3200:3200"    # Tempo UI
+    networks:
+      - go-rabbitmq-net
+    healthcheck:
+      test: curl --silent --fail localhost:3000 || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
 networks:
   go-rabbitmq-net:
     driver: bridge
 
+volumes:
+  grafana-storage:
