@@ -1,6 +1,9 @@
 # Use the latest stable Go image with Alpine
 FROM golang:1.23-alpine
 
+# Enable Go modules
+ENV GO111MODULE=on
+
 # Install necessary dependencies
 # RUN apk add --no-cache git
 
@@ -11,7 +14,7 @@ WORKDIR /app
 COPY go.mod go.sum ./
 
 # Download dependencies
-RUN go mod download
+RUN go mod tidy
 
 # Install CompileDaemon for live reloading
 RUN go install github.com/githubnemo/CompileDaemon@latest

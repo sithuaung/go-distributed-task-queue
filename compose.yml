@@ -29,6 +29,7 @@ services:
       - "8080:8080"
     volumes:
       - ./producer:/app  # Mount only the producer code
+      # - ./otel:/app/otel  # Mount otel folder into /app/otel
     # working_dir: /app  # Set working directory explicitly
     # command: go run main.go  # Run your app dynamically
 
@@ -43,6 +44,7 @@ services:
       - go-rabbitmq-net
     volumes:
       - ./consumer:/app  # Mount only the producer code
+      # - ./otel:/app/otel  # Mount otel folder into /app/otel
     # working_dir: /app  # Set working directory explicitly
     # command: go run main.go  # Run your app dynamically
 

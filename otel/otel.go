@@ -2,6 +2,7 @@ package otel
 
 import (
 	"context"
+	"fmt"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/stdout/stdoutlog"
@@ -76,17 +77,21 @@ func ShutdownOpenTelemetry(
 ) {
 	if tp != nil {
 		if err := tp.Shutdown(ctx); err != nil {
-			log.Printf("Error shutting down tracer provider: %v", err)
+			fmt.Printf("Error shutting down tracer provider: %v", err)
 		}
 	}
 	if mp != nil {
 		if err := mp.Shutdown(ctx); err != nil {
-			log.Printf("Error shutting down meter provider: %v", err)
+			fmt.Printf("Error shutting down meter provider: %v", err)
 		}
 	}
 	if lp != nil {
 		if err := lp.Shutdown(ctx); err != nil {
-			log.Printf("Error shutting down logger provider: %v", err)
+			fmt.Printf("Error shutting down logger provider: %v", err)
 		}
 	}
+}
+
+func Log() {
+	fmt.Println("Logging.....")
 }

@@ -11,8 +11,9 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
-	"github.com/sithuaung/go-distributed-task-queue/otel"
+	localotel "github.com/sithuaung/go-distributed-task-queue/otel"
 	"github.com/streadway/amqp"
+	"go.opentelemetry.io/otel"
 )
 
 // Task struct for tasks sent to RabbitMQ
@@ -163,11 +164,11 @@ func main() {
 	ctx := context.Background()
 
 	// Initialize OpenTelemetry
-	tp, mp, lp, err := otel.InitOpenTelemetry(ctx)
+	tp, mp, lp, err := localotel.InitOpenTelemetry(ctx)
 	if err != nil {
 		log.Fatalf("Failed to initialize OpenTelemetry: %v", err)
 	}
-	defer otel.ShutdownOpenTelemetry(ctx, tp, mp, lp)
+	defer localotel.ShutdownOpenTelemetry(ctx, tp, mp, lp)
 
 	// Create a tracer
 	tracer := otel.Tracer("rabbitmq-producer")
