@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/sithuaung/go-distributed-task-queue/otel"
 	"github.com/streadway/amqp"
 )
 
@@ -158,6 +160,22 @@ func createBatchTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	ctx := context.Background()
+
+	// Initialize OpenTelemetry
+	tp, mp, lp, err := otel.InitOpenTelemetry(ctx)
+	if err != nil {
+		log.Fatalf("Failed to initialize OpenTelemetry: %v", err)
+	}
+	defer otel.ShutdownOpenTelemetry(ctx, tp, mp, lp)
+
+	// Create a tracer
+	tracer := otel.Tracer("rabbitmq-producer")
+
+	// Start a span
+	ctx, span := tracer.Start(ctx, "produce-tasks")
+	defer span.End()
+
 	rabbit = initRabbitMQ()
 	defer rabbit.conn.Close()
 	defer rabbit.ch.Close()

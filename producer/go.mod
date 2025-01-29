@@ -5,6 +5,7 @@ go 1.23.5
 require (
 	github.com/go-playground/validator/v10 v10.24.0
 	github.com/google/uuid v1.6.0
+	github.com/sithuaung/go-distributed-task-queue/otel v0.0.0-20250129031846-c9f3d004e36c
 	github.com/streadway/amqp v1.1.0
 )
 

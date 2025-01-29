@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -8,9 +9,8 @@ import (
 	"sort"
 	"time"
 
+	otel "github.com/sithuaung/go-distributed-task-queue/otel"
 	"github.com/streadway/amqp"
-
-	"github.com/sithuaung/go-distributed-task-queue/otel"
 )
 
 type Task struct {
@@ -37,7 +37,21 @@ func processTask(task Task, taskType string) {
 }
 
 func main() {
-	otel.InitTracer()
+	ctx := context.Background()
+
+	// Initialize OpenTelemetry
+	tp, mp, lp, err := otel.InitOpenTelemetry(ctx)
+	if err != nil {
+		log.Fatalf("Failed to initialize OpenTelemetry: %v", err)
+	}
+	defer otel.ShutdownOpenTelemetry(ctx, tp, mp, lp)
+
+	// Create a tracer
+	tracer := otel.Tracer("rabbitmq-consumer")
+
+	// Start a span
+	ctx, span := tracer.Start(ctx, "consume-tasks")
+	defer span.End()
 
 	// Connect to RabbitMQ
 	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
