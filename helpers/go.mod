@@ -1,4 +1,4 @@
-module github.com/sithuaung/go-distributed-task-queue/otel
+module github.com/sithuaung/go-distributed-task-queue/helpers
 
 go 1.23.5
 
