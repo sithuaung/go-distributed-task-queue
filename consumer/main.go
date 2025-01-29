@@ -12,6 +12,7 @@ import (
 	h "github.com/sithuaung/go-distributed-task-queue/helpers"
 	"github.com/streadway/amqp"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 type Task struct {
@@ -26,7 +27,16 @@ func failOnError(err error, msg string) {
 	}
 }
 
-func processTask(task Task, taskType string) {
+func processTask(ctx context.Context, task Task, taskType string) {
+	tracer := otel.Tracer("rabbitmq-consumer")
+	ctx, span := tracer.Start(ctx, "process-task")
+	defer span.End()
+
+	span.SetAttributes(
+		attribute.String("task.id", task.ID),
+		attribute.String("task.type", taskType),
+	)
+
 	fmt.Printf(
 		"Processing task: id:%v, title:%v, priority:%v\n",
 		task.ID,
@@ -116,7 +126,7 @@ func main() {
 	// Process messages
 	forever := make(chan bool)
 
-	go func() {
+	go func(ctx context.Context) {
 		for d := range msgs {
 			// Deserialize the batch
 			var task Task
@@ -124,14 +134,14 @@ func main() {
 			failOnError(err, "Failed to deserialize task")
 
 			// Process the task
-			processTask(task, "single")
+			processTask(ctx, task, "single")
 
 			// Acknowledge the message
 			d.Ack(false)
 		}
-	}()
+	}(ctx)
 
-	go func() {
+	go func(ctx context.Context) {
 		for d := range batch_msgs {
 			// Deserialize the batch
 			var tasks []Task
@@ -146,13 +156,13 @@ func main() {
 
 			// Process the batch
 			for _, task := range tasks {
-				processTask(task, "batch")
+				processTask(ctx, task, "batch")
 			}
 
 			// Acknowledge the message
 			d.Ack(false)
 		}
-	}()
+	}(ctx)
 
 	fmt.Println(" [*] Waiting for tasks. To exit, press CTRL+C")
 	<-forever
