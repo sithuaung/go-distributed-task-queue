@@ -1,4 +1,4 @@
-module consumer
+module github.com/sithuaung/go-distributed-task-queue
 
 go 1.23.5
 

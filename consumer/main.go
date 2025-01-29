@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/streadway/amqp"
+
+	"github.com/sithuaung/go-distributed-task-queue/otel"
 )
 
 type Task struct {
@@ -35,6 +37,8 @@ func processTask(task Task, taskType string) {
 }
 
 func main() {
+	otel.InitTracer()
+
 	// Connect to RabbitMQ
 	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
